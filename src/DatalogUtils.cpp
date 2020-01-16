@@ -90,10 +90,36 @@ std::string str_toupper(std::string s)
 
 std::string getRegisterName(const csh& CsHandle, unsigned int reg)
 {
-    if(reg == X86_REG_INVALID)
+    if(reg == ARM64_REG_INVALID || reg == X86_REG_INVALID)
         return "NONE";
+
     std::string name = str_toupper(cs_reg_name(CsHandle, reg));
     return name;
+}
+
+std::variant<ImmOp, RegOp, IndirectOp> buildOperand(const csh& CsHandle, const cs_arm64_op& op)
+{
+    switch(op.type)
+    {
+        case ARM64_OP_REG:
+            return getRegisterName(CsHandle, op.reg);
+        case ARM64_OP_IMM:
+            return op.imm;
+        case ARM64_OP_MEM:
+        {
+            IndirectOp I = {getRegisterName(CsHandle, ARM64_REG_INVALID),
+                            getRegisterName(CsHandle, op.mem.base),
+                            getRegisterName(CsHandle, op.mem.index),
+                            1,
+                            op.mem.disp,
+                            4 * 8};
+            return I;
+        }
+        case ARM64_OP_INVALID:
+        default:
+            std::cerr << "invalid operand\n";
+            exit(1);
+    }
 }
 
 std::variant<ImmOp, RegOp, IndirectOp> buildOperand(const csh& CsHandle, const cs_x86_op& op)
@@ -211,7 +237,7 @@ void GtirbToDatalog::populateBlocks(const gtirb::Module& M)
 void GtirbToDatalog::populateInstructions(const gtirb::Module& M, int InstructionLimit)
 {
     csh CsHandle;
-    cs_open(CS_ARCH_X86, CS_MODE_64, &CsHandle); // == CS_ERR_OK
+    cs_open(arch, mode, &CsHandle); // == CS_ERR_OK
     cs_option(CsHandle, CS_OPT_DETAIL, CS_OPT_ON);
     // Exception-safe capstone handle closing
     std::unique_ptr<csh, std::function<void(csh*)>> CloseCapstoneHandle(&CsHandle, cs_close);

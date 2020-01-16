@@ -53,9 +53,12 @@ class GtirbToDatalog
 {
 private:
     std::shared_ptr<souffle::SouffleProgram> Prog;
+    cs_arch arch;
+    cs_mode mode;
 
 public:
-    GtirbToDatalog(std::shared_ptr<souffle::SouffleProgram> P) : Prog(P)
+    GtirbToDatalog(std::shared_ptr<souffle::SouffleProgram> P, cs_arch arch = CS_ARCH_X86,
+                   cs_mode mode = CS_MODE_64) : Prog(P), arch(arch), mode(mode)
     {
     }
 
