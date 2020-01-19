@@ -54,14 +54,14 @@ namespace std
 } // namespace std
 
 //TODO: Move this function to another part
-DlDecoder* make_decoder(LIEF::ARCHITECTURES arch) {
+std::optional<DlDecoder*> make_decoder(LIEF::ARCHITECTURES arch) {
     if(arch == LIEF::ARCHITECTURES::ARCH_X86) {
-        return new X86Decoder();
+        return std::make_optional(new X86Decoder());
     } else if(arch == LIEF::ARCHITECTURES::ARCH_X86) {
-        return new AArch64Decoder();
+        return std::make_optional(new AArch64Decoder());
     } else {
         //DEFAULT TO X86 for now
-        return new X86Decoder();
+        return std::nullopt;
     }
 }
 
@@ -132,11 +132,13 @@ int main(int argc, char **argv)
         return 1;
     }
     gtirb::Module &module = *(ir->modules().begin());
-    souffle::SouffleProgram *prog;
-    {
-        DlDecoder* decoder = make_decoder(arch);
+    souffle::SouffleProgram *prog = nullptr;
+
+    if(std::optional<DlDecoder*> dec = make_decoder(arch)) {
+        DlDecoder* decoder = *dec;
         std::cout << "Decoding the binary" << std::endl;
         prog = decoder->decode(module);
+        delete decoder;
     }
     if(prog)
     {
