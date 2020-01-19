@@ -22,6 +22,7 @@
 //===----------------------------------------------------------------------===//
 
 #include <gtirb/gtirb.hpp>
+#include <LIEF/LIEF.hpp>
 
 #ifndef GTIRB_ZERO_BUILDER_H_
 #define GTIRB_ZERO_BUILDER_H_
@@ -47,6 +48,6 @@ bool isAllocatedSection(int flags);
 bool isNonZeroDataSection(const SectionProperties& s);
 bool isExeSection(const SectionProperties& s);
 
-gtirb::IR* buildZeroIR(const std::string& filename, gtirb::Context& context);
+std::tuple<gtirb::IR*, LIEF::ARCHITECTURES, LIEF::ENDIANNESS> buildZeroIR(const std::string& filename, gtirb::Context& context);
 
 #endif // GTIRB_ZERO_BUILDER_H_

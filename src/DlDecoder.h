@@ -40,7 +40,7 @@ struct DlData
 
 class DlDecoder
 {
-private:
+protected:
     csh csHandle;
     DlOperandTable op_dict;
     std::vector<DlInstruction> instructions;
@@ -54,8 +54,6 @@ private:
                           gtirb::Addr ea, gtirb::Addr min_address, gtirb::Addr max_address);
 
 public:
-    DlDecoder();
-    ~DlDecoder();
     souffle::SouffleProgram* decode(gtirb::Module& module);
 };
 

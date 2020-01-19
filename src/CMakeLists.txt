@@ -145,6 +145,7 @@ add_subdirectory(passes)
 add_library(disasm_main STATIC
   disasm_main.cpp
   DlDecoder.cpp
+  X86Decoder.cpp
   ExceptionDecoder.cpp
   GtirbModuleDisassembler.cpp
   GtirbZeroBuilder.cpp

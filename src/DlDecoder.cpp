@@ -127,6 +127,7 @@ void addSections(souffle::SouffleProgram *prog, gtirb::Module &module)
     }
 }
 
+/*
 DlDecoder::DlDecoder()
 {
     cs_open(CS_ARCH_X86, CS_MODE_64, &this->csHandle); // == CS_ERR_OK
@@ -136,7 +137,7 @@ DlDecoder::DlDecoder()
 DlDecoder::~DlDecoder()
 {
     cs_close(&this->csHandle);
-}
+}*/
 
 souffle::SouffleProgram *DlDecoder::decode(gtirb::Module &module)
 {
