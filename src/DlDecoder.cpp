@@ -177,29 +177,6 @@ souffle::SouffleProgram *DlDecoder::decode(gtirb::Module &module)
     return nullptr;
 }
 
-void DlDecoder::decodeSection(gtirb::ImageByteMap::const_range &sectionBytes, uint64_t size,
-                              gtirb::Addr ea)
-{
-    auto buf = reinterpret_cast<const uint8_t *>(&*sectionBytes.begin());
-    while(size > 0)
-    {
-        cs_insn *insn;
-        size_t count = cs_disasm(csHandle, buf, size, static_cast<uint64_t>(ea), 1, &insn);
-        if(count == 0)
-        {
-            invalids.push_back(ea);
-        }
-        else
-        {
-            instructions.push_back(GtirbToDatalog::transformInstruction(csHandle, op_dict, *insn));
-            cs_free(insn, count);
-        }
-        ++ea;
-        ++buf;
-        --size;
-    }
-}
-
 void DlDecoder::storeDataSection(gtirb::ImageByteMap::const_range &sectionBytes, uint64_t size,
                                  gtirb::Addr ea, gtirb::Addr min_address, gtirb::Addr max_address)
 {

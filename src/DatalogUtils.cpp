@@ -147,7 +147,7 @@ std::variant<ImmOp, RegOp, IndirectOp> buildOperand(const csh& CsHandle, const c
     }
 }
 
-DlInstruction GtirbToDatalog::transformInstruction(const csh& CsHandle, DlOperandTable& OpDict,
+DlInstruction GtirbToDatalog::transformInstruction(const cs_arch arch, const csh& CsHandle, DlOperandTable& OpDict,
                                                    const cs_insn& insn)
 {
     std::vector<uint64_t> op_codes;
@@ -165,6 +165,30 @@ DlInstruction GtirbToDatalog::transformInstruction(const csh& CsHandle, DlOperan
         name = prefix_name;
     }
 
+    if (arch == CS_ARCH_ARM64) {
+        auto& detail = insn.detail->arm64;
+        if(name != "NOP")
+        {
+            auto opCount = detail.op_count;
+            for(int i = 0; i < opCount; i++)
+            {
+                const auto& op = detail.operands[i];
+                uint64_t index = OpDict.add(buildOperand(CsHandle, op));
+                op_codes.push_back(index);
+            }
+            // we put the destination operand at the end
+            if(opCount > 0)
+                std::rotate(op_codes.begin(), op_codes.begin() + 1, op_codes.end());
+        }
+        return {insn.address,
+                insn.size,
+                prefix,
+                name,
+                op_codes,
+                0,
+                0};
+    }
+    // default to x86
     auto& detail = insn.detail->x86;
     if(name != "NOP")
     {
@@ -257,7 +281,7 @@ void GtirbToDatalog::populateInstructions(const gtirb::Module& M, int Instructio
             Insn, [Count](cs_insn* i) { cs_free(i, Count); });
         for(size_t i = 0; i < Count; ++i)
         {
-            Insns.push_back(GtirbToDatalog::transformInstruction(CsHandle, OpDict, Insn[i]));
+            Insns.push_back(GtirbToDatalog::transformInstruction(arch, CsHandle, OpDict, Insn[i]));
         }
     }
     GtirbToDatalog::addToRelation(&*Prog, "instruction", Insns);

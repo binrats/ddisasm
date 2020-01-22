@@ -62,7 +62,7 @@ public:
     {
     }
 
-    static DlInstruction transformInstruction(const csh &CsHandle, DlOperandTable &OpDict,
+    static DlInstruction transformInstruction(const cs_arch arch, const csh &CsHandle, DlOperandTable &OpDict,
                                               const cs_insn &insn);
 
     template <typename T>
