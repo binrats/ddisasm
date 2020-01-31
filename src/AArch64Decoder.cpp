@@ -1,4 +1,3 @@
-#include "DlDecoder.h"
 #include <souffle/CompiledSouffle.h>
 #include <algorithm>
 #include <iostream>
@@ -14,6 +13,11 @@ AArch64Decoder::AArch64Decoder()
 {
     cs_open(CS_ARCH_ARM64, CS_MODE_64, &this->csHandle); // == CS_ERR_OK
     cs_option(this->csHandle, CS_OPT_DETAIL, CS_OPT_ON);
+}
+
+AArch64Decoder::~AArch64Decoder()
+{
+    cs_close(&this->csHandle);
 }
 
 /**
@@ -51,7 +55,7 @@ souffle::SouffleProgram *AArch64Decoder::decode(gtirb::Module &module)
                              minMax.second);
         }
     }
-    if(auto prog = souffle::ProgramFactory::newInstance("souffle_disasm"))
+    if(auto prog = souffle::ProgramFactory::newInstance("souffle_disasm_aarch64"))
     {
         loadInputs(prog, module);
         return prog;
@@ -59,7 +63,7 @@ souffle::SouffleProgram *AArch64Decoder::decode(gtirb::Module &module)
     return nullptr;
 }
 
-void DlDecoder::decodeSection(gtirb::ImageByteMap::const_range &sectionBytes, uint64_t size,
+void AArch64Decoder::decodeSection(gtirb::ImageByteMap::const_range &sectionBytes, uint64_t size,
                               gtirb::Addr ea)
 {
     auto buf = reinterpret_cast<const uint8_t *>(&*sectionBytes.begin());

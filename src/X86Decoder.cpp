@@ -1,4 +1,3 @@
-#include "DlDecoder.h"
 #include "X86Decoder.h"
 #include <souffle/CompiledSouffle.h>
 #include <algorithm>
@@ -51,7 +50,7 @@ souffle::SouffleProgram* X86Decoder::decode(gtirb::Module &module)
                              minMax.second);
         }
     }
-    if(auto prog = souffle::ProgramFactory::newInstance("souffle_disasm"))
+    if(auto prog = souffle::ProgramFactory::newInstance("souffle_disasm_x64"))
     {
         loadInputs(prog, module);
         return prog;
@@ -60,7 +59,7 @@ souffle::SouffleProgram* X86Decoder::decode(gtirb::Module &module)
 }
 
 
-void DlDecoder::decodeSection(gtirb::ImageByteMap::const_range &sectionBytes, uint64_t size,
+void X86Decoder::decodeSection(gtirb::ImageByteMap::const_range &sectionBytes, uint64_t size,
                               gtirb::Addr ea)
 {
     auto buf = reinterpret_cast<const uint8_t *>(&*sectionBytes.begin());

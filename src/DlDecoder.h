@@ -47,14 +47,16 @@ protected:
     std::vector<gtirb::Addr> invalids;
     std::vector<DlData<gtirb::Addr>> data_addresses;
     std::vector<DlData<unsigned char>> data_bytes;
-    void decodeSection(gtirb::ImageByteMap::const_range& sectionBytes, uint64_t size,
-                       gtirb::Addr ea);
+    virtual void decodeSection(gtirb::ImageByteMap::const_range& sectionBytes, uint64_t size,
+                       gtirb::Addr ea) = 0;
     void loadInputs(souffle::SouffleProgram* prog, gtirb::Module& module);
     void storeDataSection(gtirb::ImageByteMap::const_range& sectionBytes, uint64_t size,
                           gtirb::Addr ea, gtirb::Addr min_address, gtirb::Addr max_address);
 
 public:
-    souffle::SouffleProgram* decode(gtirb::Module& module);
+    virtual ~DlDecoder() = default;
+    DlDecoder() = default;
+    virtual souffle::SouffleProgram* decode(gtirb::Module& module) = 0;
 };
 
 #endif /* SRC_DL_DECODER_H_ */

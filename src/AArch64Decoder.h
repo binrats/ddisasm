@@ -33,6 +33,8 @@ public:
     AArch64Decoder();
     ~AArch64Decoder();
     souffle::SouffleProgram* decode(gtirb::Module& module);
+    void decodeSection(gtirb::ImageByteMap::const_range& sectionBytes, uint64_t size,
+                       gtirb::Addr ea);
 };
 
 #endif /* SRC_AARCH64_DECODER_H_ */

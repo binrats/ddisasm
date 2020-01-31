@@ -30,8 +30,10 @@ class X86Decoder : public DlDecoder
 {
 public:
     X86Decoder();
-    ~X86Decoder();
+    virtual ~X86Decoder();
     souffle::SouffleProgram* decode(gtirb::Module& module);
+    void decodeSection(gtirb::ImageByteMap::const_range& sectionBytes, uint64_t size,
+                       gtirb::Addr ea);
 };
 
 #endif /* SRC_X86_DECODER_H_ */
