@@ -11,7 +11,7 @@
 
 AArch64Decoder::AArch64Decoder()
 {
-    cs_open(CS_ARCH_ARM64, CS_MODE_64, &this->csHandle); // == CS_ERR_OK
+    cs_open(CS_ARCH_ARM64, CS_MODE_ARM, &this->csHandle); // == CS_ERR_OK
     cs_option(this->csHandle, CS_OPT_DETAIL, CS_OPT_ON);
 }
 
